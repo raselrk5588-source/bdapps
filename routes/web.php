@@ -24,7 +24,7 @@ Auth::routes();
 /**
  * admin route
  */
-Route::group(['prefix'=>'admin','middleware'=>['admin','auth'],'namespace'=>'Admin','as'=>'admin.'],function() {
+Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'auth'], 'namespace' => 'Admin', 'as' => 'admin.'], function () {
 
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     Route::get('/users', 'UserController@index')->name('user');
@@ -33,21 +33,26 @@ Route::group(['prefix'=>'admin','middleware'=>['admin','auth'],'namespace'=>'Adm
     Route::get('/user-edit/{user_id}', 'UserController@userEdit');
     Route::post('/user-edit/{user_id}', 'UserController@userUpdate');
     Route::get('/login/{user_id}', 'UserController@login');
-
 });
 
 /**
  * user route
  */
-Route::group(['prefix'=>'user','middleware'=>['user','auth'],'namespace'=>'User','as'=>'user.'],function(){
+Route::group(['prefix' => 'user', 'middleware' => ['user', 'auth'], 'namespace' => 'User', 'as' => 'user.'], function () {
 
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     Route::get('/instruction', 'InstructionController@index')->name('instruction');
 
-    Route::resource("installapp",'InstallAppController')->names([
+    Route::resource("installapp", 'InstallAppController')->names([
         'index' => 'install',
     ])->except([
-        'create','store','destroy','show','edit','update','destroy'
+        'create',
+        'store',
+        'destroy',
+        'show',
+        'edit',
+        'update',
+        'destroy'
     ]);
     Route::post('/install', 'InstallAppController@store');
     Route::get('/faq-generator', 'FaqController@index')->name('faq');
@@ -62,8 +67,11 @@ Route::group(['prefix'=>'user','middleware'=>['user','auth'],'namespace'=>'User'
 /**
  * bd apps api
  */
-Route::post('bdapps/ussd', 'API\UssdSubscriptionController@index');
-Route::post('bdapps/sms', 'API\SMSSubscriptionController@index');
+Route::post('api/bdapps/ussd', 'API\UssdSubscriptionController@index');
+Route::post('api/bdapps/sms', 'API\SMSSubscriptionController@index');
+Route::post('api/bdapps/subscription-notify', 'API\SubscriptionNotificationController@index');
+Route::post('api/bdapps/otp/request', 'API\OtpController@requestOtp');
+Route::post('api/bdapps/otp/verify', 'API\OtpController@verifyOtp');
 
 /**
  * universal route

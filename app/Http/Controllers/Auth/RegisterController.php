@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -39,6 +40,20 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    public function showRegistrationForm()
+    {
+        return view('register.register');
+    }
+
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        event(new \Illuminate\Auth\Events\Registered($user = $this->create($request->all())));
+
+        return redirect()->route('login')->with('message', 'Registration completed. Please wait for approval before logging in.');
     }
 
     /**

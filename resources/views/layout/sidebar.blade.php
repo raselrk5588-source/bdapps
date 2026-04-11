@@ -18,7 +18,9 @@
                         </ul>
                     </div>
 
-                    <p class="text-muted m-0">{{Auth::user()->role->name}}</p>
+                    <p class="text-muted m-0">
+                        {{ optional(Auth::user()->role)->name ?? (Auth::user()->role_id == 1 ? 'Admin' : (Auth::user()->role_id == 2 ? 'User' : 'Unknown')) }}
+                    </p>
                 </div>
             </div>
             <!--- Divider -->

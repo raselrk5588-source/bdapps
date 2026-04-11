@@ -2,56 +2,68 @@
 
 namespace App\Http\Components;
 
-class Subscription{
+class SubscriptionSender
+{
     var $server;
-	var $password;
-	var $applicationId;
+    var $password;
+    var $applicationId;
 
-    public function __construct($server,$password,$applicationId){
+    public function __construct($server, $password, $applicationId)
+    {
         $this->server = $server; // Assign server url
-		$this->password = $password;
-		$this->applicationId = $applicationId;
+        $this->password = $password;
+        $this->applicationId = $applicationId;
     }
-	
-	 public function getStatus($address){
-		 
-		 $this->server = 'https://developer.bdapps.com/subscription/getstatus';
 
-        $arrayField = array("applicationId" => $this->applicationId,
+    public function getStatus($address)
+    {
+
+        $this->server = 'https://developer.bdapps.com/subscription/getstatus';
+
+        $arrayField = array(
+            "applicationId" => $this->applicationId,
             "password" => $this->password,
-            "subscriberId" => $address);
+            "subscriberId" => $address
+        );
 
         $jsonObjectFields = json_encode($arrayField);
         $x =  $this->sendRequest($jsonObjectFields);
         return $x->subscriptionStatus;
     }
 
-    public function subscribe($address){
-		
-		$this->server = 'https://developer.bdapps.com/subscription/send';
+    public function subscribe($address)
+    {
 
-        $arrayField = array("applicationId" => $this->applicationId,
+        $this->server = 'https://developer.bdapps.com/subscription/send';
+
+        $arrayField = array(
+            "applicationId" => $this->applicationId,
             "password" => $this->password,
             "subscriberId" => $address,
             "version" => "1.0",
-			"action" => "1");
+            "action" => "1"
+        );
 
         $jsonObjectFields = json_encode($arrayField);
         return $this->sendRequest($jsonObjectFields);
     }
-	public function unSubscribe($address){
-		$this->server = 'https://developer.bdapps.com/subscription/send';
-        $arrayField = array("applicationId" => $this->applicationId,
+    public function unSubscribe($address)
+    {
+        $this->server = 'https://developer.bdapps.com/subscription/send';
+        $arrayField = array(
+            "applicationId" => $this->applicationId,
             "password" => $this->password,
             "subscriberId" => $address,
             "version" => "1.0",
-			"action" => "0");
+            "action" => "0"
+        );
 
         $jsonObjectFields = json_encode($arrayField);
         return $this->sendRequest($jsonObjectFields);
     }
 
-    private function sendRequest($jsonObjectFields){
+    private function sendRequest($jsonObjectFields)
+    {
         $ch = curl_init($this->server);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -63,12 +75,12 @@ class Subscription{
         return $this->handleResponse($res);
     }
 
-    private function handleResponse($resp){
+    private function handleResponse($resp)
+    {
         if ($resp == "") {
             throw new SubscriptionException("Server URL is invalid", '500');
         } else {
             return json_decode($resp);
         }
     }
-
 }

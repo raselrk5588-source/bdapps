@@ -16,6 +16,10 @@ class BDAppsApi {
     public $sessionId;
     public $ussdOperation;
     public $version;
+    public $applicationHash = "";
+    public $applicationMetaData = [];
+    public $referenceNo = "";
+    public $otp = "";
 
     public function isInvalid() {
         $invalid = false;
@@ -107,6 +111,62 @@ class BDAppsApi {
         $json = json_encode($arrayField);
         $this->url = 'https://developer.bdapps.com/subscription/getstatus';
         return $this->sendRequest($json);
+    }
+
+    public function otpRequest()
+    {
+        if ($this->isInvalid()) {
+            return $this->errorOutput();
+        }
+
+        if (!$this->hasValue($this->subscriberId)) {
+            return $this->errorOutput();
+        }
+
+        $arrayField = array(
+            "applicationId" => $this->app_id,
+            "password" => $this->password,
+            "subscriberId" => $this->subscriberId,
+        );
+
+        if ($this->hasValue($this->applicationHash)) {
+            $arrayField["applicationHash"] = $this->applicationHash;
+        }
+
+        if (is_array($this->applicationMetaData) && !empty($this->applicationMetaData)) {
+            $arrayField["applicationMetaData"] = $this->applicationMetaData;
+        }
+
+        $json = json_encode($arrayField);
+        $this->url = 'https://developer.bdapps.com/otp/request';
+        return $this->sendRequest($json);
+    }
+
+    public function otpVerify()
+    {
+        if ($this->isInvalid()) {
+            return $this->errorOutput();
+        }
+
+        if (!$this->hasValue($this->referenceNo) || !$this->hasValue($this->otp)) {
+            return $this->errorOutput();
+        }
+
+        $arrayField = array(
+            "applicationId" => $this->app_id,
+            "password" => $this->password,
+            "referenceNo" => $this->referenceNo,
+            "otp" => $this->otp,
+        );
+
+        $json = json_encode($arrayField);
+        $this->url = 'https://developer.bdapps.com/otp/verify';
+        return $this->sendRequest($json);
+    }
+
+    private function hasValue($value)
+    {
+        return isset($value) && $value !== '';
     }
 
     public function sendRequest($jsonStream){

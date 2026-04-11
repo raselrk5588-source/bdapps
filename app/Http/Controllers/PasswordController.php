@@ -11,7 +11,7 @@ class PasswordController extends Controller
 {
    public function index()
     {
-        if(Auth::user()->role->id==1)
+        if ((int) Auth::user()->role_id === 1)
         {
             return view("login.adminpasswordChange");
         }
@@ -34,7 +34,7 @@ class PasswordController extends Controller
             {
                 $user=User::find(Auth::id());
                 $user->password=Hash::make($request->password);
-                if(Auth::user()->role->id==1)
+                if ((int) Auth::user()->role_id === 1)
                 $user->email=$request->email;
                 $user->save();
                 Auth::logout();

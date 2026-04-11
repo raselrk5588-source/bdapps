@@ -21,5 +21,11 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
          "bdapps/ussd",
          "bdapps/sms",
+         "bdapps/subscription-notify",
+         "api/bdapps/ussd",
+         "api/bdapps/sms",
+         "api/bdapps/subscription-notify",
+         "api/bdapps/otp/request",
+         "api/bdapps/otp/verify",
     ];
 }
